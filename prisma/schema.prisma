@@ -1,0 +1,208 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// enums
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  USER
+  VENDOR
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  CANCELLED
+}
+
+enum Status {
+  ACTIVE
+  BLOCKED
+}
+
+model User {
+  id            String          @id @default(uuid())
+  name          String          @db.VarChar(100)
+  email         String          @unique @db.VarChar(150)
+  password      String          @db.VarChar(150)
+  phone         String?         @db.VarChar(15)
+  role          UserRole
+  status        Status          @default(ACTIVE)
+  CreatedAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  Shop          Shop?
+  Follower      Follower[]
+  Review        Review[]
+  Order         Order[]
+  RecentProduct RecentProduct[]
+
+  @@map("users")
+}
+
+model Shop {
+  id          String     @id @default(uuid())
+  name        String     @db.VarChar(100)
+  description String?    @db.Text
+  logo        String?    @db.VarChar(255)
+  userId      String     @unique
+  user        User       @relation(fields: [userId], references: [id])
+  status      Status
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Product     Product[]
+  Follower    Follower[]
+  Order       Order[]
+
+  @@map("shops")
+}
+
+model Product {
+  id            String          @id @default(uuid())
+  name          String          @db.VarChar(150)
+  description   String?         @db.Text
+  price         Float
+  discount      Int?
+  categoryId    String // Foreign key to Category
+  category      Category        @relation(fields: [categoryId], references: [id])
+  shopId        String // Foreign key to Shop
+  shop          Shop            @relation(fields: [shopId], references: [id])
+  inventory     Int             @default(0)
+  images        String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  Review        Review[]
+  OrderItem     OrderItem[]
+  FlashSale     FlashSale[]
+  RecentProduct RecentProduct[]
+
+  @@map("products")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique @db.VarChar(50)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Product   Product[]
+
+  @@map("categories")
+}
+
+model Follower {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, shopId]) 
+  @@map("followers")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  rating    Int      @default(5)
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@map("reviews")
+}
+
+model Order {
+  id          String        @id @default(uuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  shopId      String
+  shop        Shop          @relation(fields: [shopId], references: [id])
+  totalPrice  Float
+  status      OrderStatus   @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  OrderItem   OrderItem[]
+  Transaction Transaction[]
+
+  @@map("orders")
+}
+
+model Coupon {
+  id         String    @id @default(uuid())
+  code       String    @unique @db.VarChar(20)
+  discount   Float
+  isActive   Boolean   @default(true)
+  expiryDate DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("coupons")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("order_items")
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id])
+  amount        Float
+  paymentMethod String
+  status        String
+  transactionId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("transactions")
+}
+
+model FlashSale {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  discount  Int
+  startTime DateTime
+  endTime   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RecentProduct {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  viewedAt  DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@map("recent_products")
+}
