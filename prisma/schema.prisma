@@ -33,6 +33,15 @@ enum Status {
   BLOCKED
 }
 
+enum Category {
+  LEAFY_GREENS
+  ROOT_VEGETABLES
+  CRUCIFEROUS
+  GOURDS_AND_SQUASHES
+  ALLIUM_VEGETABLES
+  NIGHTSHADES
+}
+
 model User {
   id            String          @id @default(uuid())
   name          String          @db.VarChar(100)
@@ -75,8 +84,7 @@ model Product {
   description   String?         @db.Text
   price         Float
   discount      Int?
-  categoryId    String // Foreign key to Category
-  category      Category        @relation(fields: [categoryId], references: [id])
+  category      Category
   shopId        String // Foreign key to Shop
   shop          Shop            @relation(fields: [shopId], references: [id])
   inventory     Int             @default(0)
@@ -91,16 +99,6 @@ model Product {
   @@map("products")
 }
 
-model Category {
-  id        String    @id @default(uuid())
-  name      String    @unique @db.VarChar(50)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Product   Product[]
-
-  @@map("categories")
-}
-
 model Follower {
   id        String   @id @default(uuid())
   userId    String
@@ -110,7 +108,7 @@ model Follower {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, shopId]) 
+  @@unique([userId, shopId])
   @@map("followers")
 }
 
