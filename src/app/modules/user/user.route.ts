@@ -1,13 +1,12 @@
 import { Router } from "express";
 import { userControllers } from "./user.controller";
-import multer from "multer";
-import path from "path"
-import { fileUploader } from "../../utils/fileUploader";
 
+const router = Router();
 
-const router = Router()
+router.get("/users", userControllers.getAllUsers);
 
+router.get("/users/:id", userControllers.getSingleUser);
 
-router.post('/admin' ,fileUploader.upload.single('profilePhoto'), userControllers.createAdminIntoDB)
+router.delete("/users/:id", userControllers.deleteUser);
 
-export const userRoutes = router  
+export const userRoutes = router;

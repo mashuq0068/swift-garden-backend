@@ -1,70 +1,30 @@
-import { PrismaClient, UserRole } from "@prisma/client";
-import QueryBuilder, { QueryParams } from "../../builder/queryBuilder";
-import { fileUploader } from "../../utils/fileUploader";
-const prisma = new PrismaClient();
+import { User } from "@prisma/client";
+import { prisma } from "../../config";
 
-const createAdmin = async (req: any) => {
-  const data = req.body;
-  const profilePhoto = req.file;
-  console.log("profilePhoto => ",profilePhoto);
-  if (profilePhoto) {
-    const uploadToCloudinary = await fileUploader.uploadToCloudinary(
-      profilePhoto
-    );
-    req.body.profilePhoto = uploadToCloudinary?.secure_url;
-  }
-  const userData = {
-    name: "boss",
-    email: "mashuq@email.com",
-    password: "29233093@#",
-    role: UserRole.ADMIN,
-  };
-  const result = await prisma.$transaction(async (txn) => {
-    await txn.user.create({
-      data: userData,
-    });
-    const createAdmin = await txn.admin.create({
-      data: data,
-    });
-    return createAdmin;
-  });
-  return result;
+const getUsers = async () => {
+  const users = await prisma.user.findMany();
+  return users;
 };
 
-const getSingleAdmin = async (_id: string, payload: any) => {
-  const result = await prisma.admin.update({
-    where: {
-      id: _id,
-    },
-    data: payload,
+const getUserById = async (id: string) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id },
   });
-  return result;
+  return user;
 };
 
-const getAllAdmin = async (queryParams: QueryParams) => {
-  // Create an instance of QueryBuilder with query parameters
-  const queryBuilder = new QueryBuilder(queryParams);
-
-  // Apply the necessary methods to build the query
-  const prismaQuery = queryBuilder
-    .addSearch(["name", "email"]) // Add search fields (adjust as needed)
-    .addFilters() // Add filters from queryParams
-    .addSort() // Add sorting if specified in queryParams
-    .addPagination() // Add pagination logic if specified in queryParams
-    .build(); // Build the final Prisma query
-
-  // Execute the Prisma query using the built query
-  const result = await prisma.admin.findMany(prismaQuery);
-  const meta = await queryBuilder.countTotal(prisma.admin);
-
-  return {
-    data: result,
-    meta,
-  };
+const deleteUser = async (id: string) => {
+  await prisma.user.findUniqueOrThrow({
+    where: { id },
+  });
+  await prisma.user.delete({
+    where: { id },
+  });
+  return { message: "User deleted successfully" };
 };
 
 export const userServices = {
-  createAdmin,
-  getAllAdmin,
-  getSingleAdmin,
+  getUsers,
+  getUserById,
+  deleteUser,
 };
