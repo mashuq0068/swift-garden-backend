@@ -10,6 +10,7 @@ interface IResponseData<T> {
   status: number;
   message: string;
   meta?: IMeta;
+  token?:string;
   data?: T;
 }
 
@@ -18,6 +19,7 @@ const sendResponse = <T>(res: Response, responseData: IResponseData<T>) => {
     success: responseData?.success,
     message: responseData?.message,
     ...(responseData.meta ? { meta: responseData?.meta } : {}),
+    ...(responseData.token ? { token: responseData?.token} : {}),
     ...(responseData.data ? { data: responseData?.data } : {}),
   });
 };

@@ -33,21 +33,13 @@ enum Status {
   BLOCKED
 }
 
-enum Category {
-  LEAFY_GREENS
-  ROOT_VEGETABLES
-  CRUCIFEROUS
-  GOURDS_AND_SQUASHES
-  ALLIUM_VEGETABLES
-  NIGHTSHADES
-}
-
 model User {
   id            String          @id @default(uuid())
   name          String          @db.VarChar(100)
   email         String          @unique @db.VarChar(150)
   password      String          @db.VarChar(150)
   phone         String?         @db.VarChar(15)
+  photo         String?
   role          UserRole
   status        Status          @default(ACTIVE)
   CreatedAt     DateTime        @default(now())
@@ -84,11 +76,12 @@ model Product {
   description   String?         @db.Text
   price         Float
   discount      Int?
-  category      Category
-  shopId        String // Foreign key to Shop
+  categoryId    String
+  category      Category        @relation(fields: [categoryId], references: [id])
+  shopId        String 
   shop          Shop            @relation(fields: [shopId], references: [id])
   inventory     Int             @default(0)
-  images        String
+  photo         String
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   Review        Review[]
@@ -97,6 +90,16 @@ model Product {
   RecentProduct RecentProduct[]
 
   @@map("products")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique @db.VarChar(50)
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("categories")
 }
 
 model Follower {

@@ -6,7 +6,7 @@ const signUpUser = catchAsync(async (req, res) => {
   const result = await authServices.signUp(req.body)
   sendResponse(res, {
     success: true,
-    statusCode: 201,
+    status: 201,
     message: 'User registered successfully',
     data: result,
   })
@@ -15,7 +15,7 @@ const loginUser = catchAsync(async (req, res) => {
   const {token , user} = await authServices.login(req.body)
   sendResponse(res, {
     success: true,
-    statusCode: 201,
+    status: 201,
     message: 'User logged in successfully',
     token:token,
     data: user,

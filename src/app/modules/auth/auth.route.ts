@@ -1,17 +1,7 @@
-import express from 'express'
-import zodValidation from '../../middlewares/zodValidation'
-import { createUserValidationSchema } from '../user/user.validation'
-import { authControllers } from './auth.controller'
-import { loginUserValidationSchema } from './auth.validation'
-const router = express.Router()
-router.post(
-  '/signup',
-  zodValidation(createUserValidationSchema),
-  authControllers.signUpUser,
-)
-router.post(
-  '/login',
-  zodValidation(loginUserValidationSchema),
-  authControllers.loginUser,
-)
-export const authRoutes = router
+import express from "express";
+
+import { authControllers } from "./auth.controller";
+const router = express.Router();
+router.post("/signup", authControllers.signUpUser);
+router.post("/login", authControllers.loginUser);
+export const authRoutes = router;

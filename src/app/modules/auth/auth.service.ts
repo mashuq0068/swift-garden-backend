@@ -11,20 +11,22 @@ const signUp = async (payload: User) => {
   const result = await prisma.user.create({
     data: {
       ...payload,
-      password: hashedPassword, 
+      password: hashedPassword,
     },
   });
 
   return result;
 };
 
-const login = async (email: string, password: string) => {
+const login = async (payload: Partial<User>) => {
+  const email: string | undefined = payload?.email;
+  const password: string | undefined = payload?.password;
   const user = await prisma.user.findUniqueOrThrow({
     where: { email },
   });
 
   // Validate the password
-  const isPasswordMatched = await bcrypt.compare(password, user.password);
+  const isPasswordMatched = await bcrypt.compare(password as string, user.password);
   if (!isPasswordMatched) {
     throw new Error("Invalid email or password");
   }
