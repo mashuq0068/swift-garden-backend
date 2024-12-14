@@ -8,6 +8,8 @@ import { flashSaleRoutes } from "../modules/flashSale/flashSale.route";
 import { reviewRoutes } from "../modules/review/review.route";
 import { recentProductRoutes } from "../modules/recentProduct/recentProduct.route";
 import { couponRoutes } from "../modules/coupon/coupon.route";
+import { categoryRoutes } from "../modules/category/category.routes";
+import { uploadRoutes } from "../modules/upload/upload.route";
 const router = express.Router();
 
 const routes = [
@@ -46,6 +48,14 @@ const routes = [
   {
     path: "/coupons",
     routes: couponRoutes,
+  },
+  {
+    path: "/categories",
+    routes: categoryRoutes,
+  },
+  {
+    path: "/uploads",
+    routes: uploadRoutes,
   },
 ];
 routes.forEach((route) => router.use(route.path, route.routes));

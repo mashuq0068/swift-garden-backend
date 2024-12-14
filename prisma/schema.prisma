@@ -60,7 +60,7 @@ model Shop {
   logo        String?    @db.VarChar(255)
   userId      String     @unique
   user        User       @relation(fields: [userId], references: [id])
-  status      Status
+  status      Status     @default(ACTIVE)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   Product     Product[]
@@ -78,7 +78,7 @@ model Product {
   discount      Int?
   categoryId    String
   category      Category        @relation(fields: [categoryId], references: [id])
-  shopId        String 
+  shopId        String
   shop          Shop            @relation(fields: [shopId], references: [id])
   inventory     Int             @default(0)
   photo         String
@@ -95,6 +95,7 @@ model Product {
 model Category {
   id        String    @id @default(uuid())
   name      String    @unique @db.VarChar(50)
+  image     String?
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

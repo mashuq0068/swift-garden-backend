@@ -3,7 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import { productServices } from "./product.service";
 
 const createProductIntoDB = catchAsync(async (req, res) => {
-  const result = await productServices.createProduct(req.body);
+  const result = await productServices.createProduct(req);
   sendResponse(res, {
     success: true,
     status: 200,
@@ -13,7 +13,7 @@ const createProductIntoDB = catchAsync(async (req, res) => {
 });
 
 const getAllProductsFromDB = catchAsync(async (req, res) => {
-  const result = await productServices.getProducts();
+  const result = await productServices.getProducts(req.query);
   sendResponse(res, {
     success: true,
     status: 200,
@@ -33,9 +33,9 @@ const getSingleProductFromDB = catchAsync(async (req, res) => {
   });
 });
 
-const updateProductIntoDB = catchAsync(async (req, res) => {
+const updateProductIntoDB = catchAsync(async (req , res) => {
   const { id } = req.params;
-  const result = await productServices.updateProduct(id, req.body);
+  const result = await productServices.updateProduct( id , req);
   sendResponse(res, {
     success: true,
     status: 200,

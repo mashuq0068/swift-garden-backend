@@ -3,7 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import { shopServices } from "./shop.service";
 
 const createShopIntoDB = catchAsync(async (req, res) => {
-  const result = await shopServices.createShop(req.body);
+  const result = await shopServices.createShop(req);
   sendResponse(res, {
     success: true,
     status: 200,
@@ -35,6 +35,7 @@ const getSingleShopFromDB = catchAsync(async (req, res) => {
 
 const updateShopIntoDB = catchAsync(async (req, res) => {
   const { id } = req.params;
+  console.log("req_body" , req.body);
   const result = await shopServices.updateShop(id, req.body);
   sendResponse(res, {
     success: true,

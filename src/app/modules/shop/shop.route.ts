@@ -1,9 +1,14 @@
 import { Router } from "express";
 import { shopControllers } from "./shop.controller";
+import { fileUploader } from "../../utils/fileUploader";
 
 const router = Router();
 
-router.post("/", shopControllers.createShopIntoDB);
+router.post(
+  "/",
+  fileUploader.upload.single("logo"),
+  shopControllers.createShopIntoDB
+);
 router.get("/", shopControllers.getAllShopsFromDB);
 router.get("/:id", shopControllers.getSingleShopFromDB);
 router.put("/:id", shopControllers.updateShopIntoDB);

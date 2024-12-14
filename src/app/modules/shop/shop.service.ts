@@ -1,9 +1,16 @@
 import { Shop } from "@prisma/client";
 import { prisma } from "../../config";
+import { fileUploader } from "../../utils/fileUploader";
 
-const createShop = async (payload: Shop) => {
+const createShop = async (req: any) => {
+  const logo = req.file;
+  if (logo) {
+    const uploadToCloudinary = await fileUploader.uploadToCloudinary(logo);
+    req.body.logo = uploadToCloudinary?.secure_url;
+  }
+  console.log("req => ", req.body);
   const result = await prisma.shop.create({
-    data: payload,
+    data: { ...req.body },
   });
   return result;
 };
@@ -34,13 +41,15 @@ const getSingleShop = async (id: string) => {
 };
 
 const updateShop = async (id: string, payload: Partial<Shop>) => {
-  await prisma.shop.findUniqueOrThrow({
+ const res =  await prisma.shop.findUniqueOrThrow({
     where: { id },
   });
+  console.log("payload",payload);
   const result = await prisma.shop.update({
     where: { id },
     data: payload,
   });
+  console.log(result);
   return result;
 };
 
