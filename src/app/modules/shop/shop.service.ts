@@ -8,7 +8,7 @@ const createShop = async (req: any) => {
     const uploadToCloudinary = await fileUploader.uploadToCloudinary(logo);
     req.body.logo = uploadToCloudinary?.secure_url;
   }
-  console.log("req => ", req.body);
+
   const result = await prisma.shop.create({
     data: { ...req.body },
   });
@@ -44,12 +44,11 @@ const updateShop = async (id: string, payload: Partial<Shop>) => {
  const res =  await prisma.shop.findUniqueOrThrow({
     where: { id },
   });
-  console.log("payload",payload);
   const result = await prisma.shop.update({
     where: { id },
     data: payload,
   });
-  console.log(result);
+
   return result;
 };
 

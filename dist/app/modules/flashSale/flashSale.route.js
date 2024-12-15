@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.flashSaleRoutes = void 0;
+const express_1 = require("express");
+const flashSale_controller_1 = require("./flashSale.controller");
+const router = (0, express_1.Router)();
+router.post("/", flashSale_controller_1.flashSaleControllers.createFlashSaleIntoDB);
+router.get("/", flashSale_controller_1.flashSaleControllers.getAllFlashSalesFromDB);
+router.get("/:id", flashSale_controller_1.flashSaleControllers.getSingleFlashSaleFromDB);
+router.put("/:id", flashSale_controller_1.flashSaleControllers.updateFlashSaleIntoDB);
+router.delete("/:id", flashSale_controller_1.flashSaleControllers.deleteFlashSaleFromDB);
+exports.flashSaleRoutes = router;

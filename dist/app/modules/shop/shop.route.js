@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.shopRoutes = void 0;
+const express_1 = require("express");
+const shop_controller_1 = require("./shop.controller");
+const fileUploader_1 = require("../../utils/fileUploader");
+const router = (0, express_1.Router)();
+router.post("/", fileUploader_1.fileUploader.upload.single("logo"), shop_controller_1.shopControllers.createShopIntoDB);
+router.get("/", shop_controller_1.shopControllers.getAllShopsFromDB);
+router.get("/:id", shop_controller_1.shopControllers.getSingleShopFromDB);
+router.put("/:id", shop_controller_1.shopControllers.updateShopIntoDB);
+router.delete("/:id", shop_controller_1.shopControllers.deleteShopFromDB);
+exports.shopRoutes = router;

@@ -1,7 +1,7 @@
 import { IMeta } from "../utils/sendResponse";
 
 export interface QueryParams {
-  [key: string]: any; 
+  [key: string]: any;
   search?: string;
   sort?: string;
   page?: string;
@@ -10,7 +10,7 @@ export interface QueryParams {
 
 interface PrismaQuery {
   where: Record<string, any>;
-  orderBy: Record<string, 'asc' | 'desc'>;
+  orderBy: Record<string, "asc" | "desc">;
   skip: number;
   take: number;
 }
@@ -36,20 +36,32 @@ class QueryBuilder {
     const { search } = this.queryParams;
     if (search && fields.length > 0) {
       this.query.where.OR = fields.map((field) => ({
-        [field]: { contains: search, mode: 'insensitive' },
+        [field]: { contains: search, mode: "insensitive" },
       }));
     }
     return this;
   }
 
-  // Updated method to add filters to the query
   addFilters(): this {
-    const excludeFields = ['search', 'sort', 'limit', 'page'];
-    for (const [key, value] of Object.entries(this.queryParams)) {
-      if (!excludeFields.includes(key)) {
-        this.query.where[key] = value;
-      }
+    const filters = this.queryParams.filters || {};
+
+    if (filters.categories && filters.categories.length > 0) {
+      this.query.where.categoryId = { in: filters.categories };
     }
+
+    if (filters.minPrice) {
+      this.query.where.price = {
+        ...this.query.where.price,
+        gte: parseFloat(filters.minPrice),
+      };
+    }
+    if (filters.maxPrice) {
+      this.query.where.price = {
+        ...this.query.where.price,
+        lte: parseFloat(filters.maxPrice),
+      };
+    }
+
     return this;
   }
 
@@ -57,9 +69,9 @@ class QueryBuilder {
   addSort(): this {
     const { sort } = this.queryParams;
     if (sort) {
-      const [field, direction] = sort.split(':'); // e.g., "createdAt:desc"
+      const [field, direction] = sort.split(":"); // e.g., "createdAt:desc"
       this.query.orderBy = {
-        [field]: (direction as 'asc' | 'desc') || 'asc',
+        [field]: (direction as "asc" | "desc") || "asc",
       };
     }
     return this;
@@ -86,8 +98,8 @@ class QueryBuilder {
   async countTotal(prismaModel: any): Promise<IMeta> {
     const total = await prismaModel.count({ where: this.query.where });
     const { page, limit: pageSize } = this.queryParams;
-    const currentPage = parseInt(page || '0', 10);
-    const limit = parseInt(pageSize || '10', 10);
+    const currentPage = parseInt(page || "0", 10);
+    const limit = parseInt(pageSize || "10", 10);
     const totalPages = Math.ceil(total / limit);
 
     return {

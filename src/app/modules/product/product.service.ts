@@ -15,7 +15,6 @@ const createProduct = async (req: any) => {
   // Assuming req.body contains shopId and categoryId
   const { shopId, categoryId, ...productData } = req.body;
 
-  console.log("req => ", req.body);
 
   const result = await prisma.product.create({
     data: {
@@ -35,26 +34,29 @@ const createProduct = async (req: any) => {
 };
 
 const getProducts = async (queryParams: QueryParams) => {
+  console.log("query",queryParams);
   const queryBuilder = new QueryBuilder(queryParams);
   const prismaQuery = queryBuilder
-    .addSearch(["name"]) // Add search fields (adjust as needed)
-    .addFilters() // Add filters from queryParams
-    .addSort() // Add sorting if specified in queryParams
-    .addPagination() // Add pagination logic if specified in queryParams
-    .build(); // Build the final Prisma query
+    .addSearch(["name"])
+    .addFilters()
+    .addSort()
+    .addPagination()
+    .build();
+
   const result = await prisma.product.findMany({
-    where: prismaQuery.where, // Apply the dynamically constructed `where` filters
-    orderBy: prismaQuery.orderBy, // Apply the dynamically constructed `orderBy` sorting
-    skip: prismaQuery.skip, // Pagination: Skip the right number of records
-    take: prismaQuery.take, // Pagination: Limit the number of records to `take`
+    where: prismaQuery.where,
+    orderBy: prismaQuery.orderBy,
+    skip: prismaQuery.skip,
+    take: prismaQuery.take,
     include: {
-      category: true, // Include related category data
-      shop: true, // Include related shop data
-      // Add other related models as needed
+      category: true,
+      shop: true,
     },
   });
+
   return result;
 };
+
 
 const getSingleProduct = async (id: string) => {
   const result = await prisma.product.findUniqueOrThrow({

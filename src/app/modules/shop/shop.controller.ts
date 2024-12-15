@@ -35,7 +35,6 @@ const getSingleShopFromDB = catchAsync(async (req, res) => {
 
 const updateShopIntoDB = catchAsync(async (req, res) => {
   const { id } = req.params;
-  console.log("req_body" , req.body);
   const result = await shopServices.updateShop(id, req.body);
   sendResponse(res, {
     success: true,

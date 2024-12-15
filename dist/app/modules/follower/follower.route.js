@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.followerRoutes = void 0;
+const express_1 = require("express");
+const follower_controller_1 = require("./follower.controller");
+const router = (0, express_1.Router)();
+router.post("/", follower_controller_1.followerControllers.createFollowerIntoDB);
+router.get("/", follower_controller_1.followerControllers.getAllFollowersFromDB);
+router.get("/:id", follower_controller_1.followerControllers.getSingleFollowerFromDB);
+router.put("/:id", follower_controller_1.followerControllers.updateFollowerIntoDB);
+router.delete("/:id", follower_controller_1.followerControllers.deleteFollowerFromDB);
+exports.followerRoutes = router;

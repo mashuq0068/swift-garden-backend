@@ -19,8 +19,8 @@ const getRecentProducts = async () => {
 };
 
 const getSingleRecentProduct = async (id: string) => {
-  const result = await prisma.recentProduct.findUniqueOrThrow({
-    where: { id },
+  const result = await prisma.recentProduct.findMany({
+    where: { userId : id },
     include: {
       product: true,
       user: true,
