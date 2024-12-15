@@ -9,6 +9,11 @@ const getUsers = async () => {
 const getUserById = async (id: string) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: { id },
+    include : {
+      Follower : true,
+      Review:true,
+      Order:true
+    }
   });
   return user;
 };

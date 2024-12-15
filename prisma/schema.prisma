@@ -26,6 +26,7 @@ enum OrderStatus {
   PAID
   SHIPPED
   CANCELLED
+  COMPLETED
 }
 
 enum Status {
@@ -130,6 +131,17 @@ model Review {
   @@map("reviews")
 }
 
+model Coupon {
+  id         String    @id @default(uuid())
+  code       String    @unique @db.VarChar(20)
+  discount   Float
+  isActive   Boolean   @default(true)
+  expiryDate DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("coupons")
+}
 model Order {
   id          String        @id @default(uuid())
   userId      String
@@ -146,17 +158,6 @@ model Order {
   @@map("orders")
 }
 
-model Coupon {
-  id         String    @id @default(uuid())
-  code       String    @unique @db.VarChar(20)
-  discount   Float
-  isActive   Boolean   @default(true)
-  expiryDate DateTime?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-
-  @@map("coupons")
-}
 
 model OrderItem {
   id        String   @id @default(uuid())
