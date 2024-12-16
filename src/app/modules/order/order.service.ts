@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { prisma } from "../../config";
+import QueryBuilder, { QueryParams } from "../../builder/queryBuilder";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2024-11-20.acacia",
@@ -42,10 +43,10 @@ const createOrderAndPaymentLink = async ({
     },
     include: { OrderItem: true },
   });
-  console.log("order" , order);
+  console.log("order", order);
 
   // Ensure CLIENT_URL is properly defined, use localhost as fallback if not defined
-  const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+  const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
 
   const line_items = items.map((item) => ({
     price_data: {
@@ -59,11 +60,11 @@ const createOrderAndPaymentLink = async ({
   }));
   // Create Stripe Checkout Session
   const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
+    payment_method_types: ["card"],
     line_items,
-    mode: 'payment',
-    success_url: 'http://localhost:3000/success',
-    cancel_url: 'http://localhost:3000/cancel',
+    mode: "payment",
+    success_url: "http://localhost:3000/success",
+    cancel_url: "http://localhost:3000/cancel",
   });
 
   // Save Transaction
@@ -79,7 +80,30 @@ const createOrderAndPaymentLink = async ({
 
   return { paymentUrl: session.url }; // Return the Stripe Checkout URL
 };
+const getAllOrdersFromDB = async (queryParams: QueryParams) => {
+
+  // Create an instance of QueryBuilder with query parameters
+  const queryBuilder = new QueryBuilder(queryParams);
+
+  // Apply the necessary methods to build the query
+  const prismaQuery = queryBuilder
+    .addSearch(["name", "email"]) // Add search fields (adjust as needed)
+    .addFilters() // Add filters from queryParams
+    .addSort() // Add sorting if specified in queryParams
+    .addPagination() // Add pagination logic if specified in queryParams
+    .build(); // Build the final Prisma query
+console.log(prismaQuery);
+  // Execute the Prisma query using the built query
+  const result = await prisma.order.findMany(prismaQuery);
+  const meta = await queryBuilder.countTotal(prisma.order);
+
+  return {
+    data: result,
+    meta,
+  };
+};
 
 export const orderServices = {
   createOrderAndPaymentLink,
+  getAllOrdersFromDB,
 };

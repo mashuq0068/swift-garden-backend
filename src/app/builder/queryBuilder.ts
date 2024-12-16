@@ -61,6 +61,9 @@ class QueryBuilder {
         lte: parseFloat(filters.maxPrice),
       };
     }
+    if (filters.shopId) {
+      this.query.where.shopId = filters.shopId;
+    }
 
     return this;
   }
