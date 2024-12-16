@@ -21,7 +21,12 @@ const getSingleCategory = async (id: string) => {
   const result = await prisma.category.findUniqueOrThrow({
     where: { id },
     include: {
-      products: true,
+      products: {
+        include : {
+          shop:true
+        }
+      }
+      
     },
   });
   return result;

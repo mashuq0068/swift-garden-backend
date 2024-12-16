@@ -1,19 +1,30 @@
-import { User } from "@prisma/client";
+import { User, UserRole } from "@prisma/client";
 import { prisma } from "../../config";
+interface QueryParams {
+  role?: UserRole;
+}
 
-const getUsers = async () => {
-  const users = await prisma.user.findMany();
+const getUsers = async (query: QueryParams) => {
+  const { role } = query;
+
+  const users = await prisma.user.findMany({
+    where: role ? { role } : {},
+    include: {
+      Shop: true, 
+    },
+  });
+
   return users;
 };
 
 const getUserById = async (id: string) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: { id },
-    include : {
-      Follower : true,
-      Review:true,
-      Order:true
-    }
+    include: {
+      Follower: true,
+      Review: true,
+      Order: true,
+    },
   });
   return user;
 };
