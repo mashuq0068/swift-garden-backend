@@ -11,6 +11,15 @@ const createShopIntoDB = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const createManyShopsIntoDB = catchAsync(async (req, res) => {
+  const result = await shopServices.createManyShops(req.body);
+  sendResponse(res, {
+    success: true,
+    status: 200,
+    message: "Shops created successfully",
+    data: result,
+  });
+});
 
 const getAllShopsFromDB = catchAsync(async (req, res) => {
   const result = await shopServices.getShops();
@@ -57,6 +66,7 @@ const deleteShopFromDB = catchAsync(async (req, res) => {
 
 export const shopControllers = {
   createShopIntoDB,
+  createManyShopsIntoDB,
   getAllShopsFromDB,
   getSingleShopFromDB,
   updateShopIntoDB,

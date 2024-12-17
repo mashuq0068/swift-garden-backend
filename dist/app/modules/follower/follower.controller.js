@@ -16,17 +16,30 @@ exports.followerControllers = void 0;
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const follower_service_1 = require("./follower.service");
+// Create a follower
 const createFollowerIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield follower_service_1.followerServices.createFollower(req.body);
+    const { userId, shopId } = req.body;
+    const result = yield follower_service_1.followerServices.createFollower(userId, shopId);
     (0, sendResponse_1.default)(res, {
         success: true,
-        status: 200,
+        status: 201,
         message: "Follower created successfully",
         data: result,
     });
 }));
+// Toggle follow/unfollow
+const toggleFollowerIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, shopId } = req.body;
+    const status = yield follower_service_1.followerServices.toggleFollower(userId, shopId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        status: 200,
+        message: `Shop successfully ${status}`,
+    });
+}));
+// Get all followers
 const getAllFollowersFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield follower_service_1.followerServices.getFollowers();
+    const result = yield follower_service_1.followerServices.getAllFollowers();
     (0, sendResponse_1.default)(res, {
         success: true,
         status: 200,
@@ -34,29 +47,32 @@ const getAllFollowersFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(
         data: result,
     });
 }));
-const getSingleFollowerFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield follower_service_1.followerServices.getSingleFollower(id);
+// Get followers by shop
+const getFollowersByShopFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { shopId } = req.params;
+    const result = yield follower_service_1.followerServices.getFollowersByShop(shopId);
     (0, sendResponse_1.default)(res, {
         success: true,
         status: 200,
-        message: "Follower retrieved successfully",
+        message: "Followers retrieved successfully for the shop",
         data: result,
     });
 }));
-const updateFollowerIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield follower_service_1.followerServices.updateFollower(id, req.body);
+// Get followed shops by user
+const getFollowedShopsByUserFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const result = yield follower_service_1.followerServices.getFollowedShopsByUser(userId);
     (0, sendResponse_1.default)(res, {
         success: true,
         status: 200,
-        message: "Follower updated successfully",
+        message: "Followed shops retrieved successfully for the user",
         data: result,
     });
 }));
+// Delete a follower
 const deleteFollowerFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    yield follower_service_1.followerServices.deleteFollower(id);
+    const { userId, shopId } = req.body;
+    yield follower_service_1.followerServices.deleteFollower(userId, shopId);
     (0, sendResponse_1.default)(res, {
         success: true,
         status: 200,
@@ -65,8 +81,9 @@ const deleteFollowerFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(v
 }));
 exports.followerControllers = {
     createFollowerIntoDB,
+    toggleFollowerIntoDB,
     getAllFollowersFromDB,
-    getSingleFollowerFromDB,
-    updateFollowerIntoDB,
+    getFollowersByShopFromDB,
+    getFollowedShopsByUserFromDB,
     deleteFollowerFromDB,
 };

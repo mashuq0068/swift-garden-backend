@@ -14,6 +14,18 @@ const createShop = async (req: any) => {
   });
   return result;
 };
+const createManyShops = async (payload: Omit<Shop, 'id' | 'createdAt' | 'updatedAt'>[]) => {
+  try {
+    const result = await prisma.shop.createMany({
+      data: payload,
+      
+    });
+    return result;
+  } catch (error) {
+    console.error('Error creating shops:', error);
+    throw new Error('Failed to create shops');
+  }
+};
 
 const getShops = async () => {
   const result = await prisma.shop.findMany({
@@ -66,5 +78,6 @@ export const shopServices = {
   getShops,
   getSingleShop,
   updateShop,
+  createManyShops,
   deleteShop,
 };

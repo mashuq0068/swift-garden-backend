@@ -9,6 +9,7 @@ router.post(
   fileUploader.upload.single("logo"),
   shopControllers.createShopIntoDB
 );
+
 router.get("/", shopControllers.getAllShopsFromDB);
 router.get("/:id", shopControllers.getSingleShopFromDB);
 router.put("/:id", shopControllers.updateShopIntoDB);

@@ -11,6 +11,15 @@ const createCategoryIntoDB = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const createManyCategoryIntoDB = catchAsync(async (req, res) => {
+  const result = await categoryServices.createManyCategories(req.body);
+  sendResponse(res, {
+    success: true,
+    status: 200,
+    message: "Categories created successfully",
+    data: result,
+  });
+});
 
 const getAllCategoriesFromDB = catchAsync(async (req, res) => {
   const result = await categoryServices.getCategories();
@@ -60,4 +69,5 @@ export const categoryControllers = {
   getSingleCategoryFromDB,
   updateCategoryIntoDB,
   deleteCategoryFromDB,
+  createManyCategoryIntoDB
 };

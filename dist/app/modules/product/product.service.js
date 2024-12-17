@@ -37,7 +37,6 @@ const createProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
     }
     // Assuming req.body contains shopId and categoryId
     const _a = req.body, { shopId, categoryId } = _a, productData = __rest(_a, ["shopId", "categoryId"]);
-    console.log("req => ", req.body);
     const result = yield config_1.prisma.product.create({
         data: Object.assign(Object.assign({}, productData), { // Spread the remaining product data (name, price, etc.)
             price,
@@ -50,22 +49,22 @@ const createProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const getProducts = (queryParams) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("query", queryParams);
     const queryBuilder = new queryBuilder_1.default(queryParams);
     const prismaQuery = queryBuilder
-        .addSearch(["name"]) // Add search fields (adjust as needed)
-        .addFilters() // Add filters from queryParams
-        .addSort() // Add sorting if specified in queryParams
-        .addPagination() // Add pagination logic if specified in queryParams
-        .build(); // Build the final Prisma query
+        .addSearch(["name"])
+        .addFilters()
+        .addSort()
+        .addPagination()
+        .build();
     const result = yield config_1.prisma.product.findMany({
-        where: prismaQuery.where, // Apply the dynamically constructed `where` filters
-        orderBy: prismaQuery.orderBy, // Apply the dynamically constructed `orderBy` sorting
-        skip: prismaQuery.skip, // Pagination: Skip the right number of records
-        take: prismaQuery.take, // Pagination: Limit the number of records to `take`
+        where: prismaQuery.where,
+        orderBy: prismaQuery.orderBy,
+        skip: prismaQuery.skip,
+        take: prismaQuery.take,
         include: {
-            category: true, // Include related category data
-            shop: true, // Include related shop data
-            // Add other related models as needed
+            category: true,
+            shop: true,
         },
     });
     return result;

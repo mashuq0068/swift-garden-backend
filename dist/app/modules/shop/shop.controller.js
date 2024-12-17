@@ -25,6 +25,15 @@ const createShopIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 
         data: result,
     });
 }));
+const createManyShopsIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield shop_service_1.shopServices.createManyShops(req.body);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        status: 200,
+        message: "Shops created successfully",
+        data: result,
+    });
+}));
 const getAllShopsFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield shop_service_1.shopServices.getShops();
     (0, sendResponse_1.default)(res, {
@@ -46,7 +55,6 @@ const getSingleShopFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(vo
 }));
 const updateShopIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    console.log("req_body", req.body);
     const result = yield shop_service_1.shopServices.updateShop(id, req.body);
     (0, sendResponse_1.default)(res, {
         success: true,
@@ -67,6 +75,7 @@ const deleteShopFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 
 }));
 exports.shopControllers = {
     createShopIntoDB,
+    createManyShopsIntoDB,
     getAllShopsFromDB,
     getSingleShopFromDB,
     updateShopIntoDB,

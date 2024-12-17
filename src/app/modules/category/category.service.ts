@@ -7,6 +7,18 @@ const createCategory = async (payload: Omit<Category, "id" | "createdAt" | "upda
   });
   return result;
 };
+const createManyCategories = async (payload: Omit<Category, 'id' | 'createdAt' | 'updatedAt'>[]) => {
+  try {
+    const result = await prisma.category.createMany({
+      data: payload,
+      skipDuplicates: true, 
+    });
+    return result;
+  } catch (error) {
+    console.error('Error creating categories:', error);
+    throw new Error('Failed to create categories');
+  }
+};
 
 const getCategories = async () => {
   const result = await prisma.category.findMany({
@@ -56,6 +68,7 @@ export const categoryServices = {
   createCategory,
   getCategories,
   getSingleCategory,
+  createManyCategories,
   updateCategory,
   deleteCategory,
 };

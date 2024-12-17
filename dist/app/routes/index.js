@@ -9,13 +9,14 @@ const user_route_1 = require("../modules/user/user.route");
 const auth_route_1 = require("../modules/auth/auth.route");
 const product_route_1 = require("../modules/product/product.route");
 const shop_route_1 = require("../modules/shop/shop.route");
-const follower_route_1 = require("../modules/follower/follower.route");
 const flashSale_route_1 = require("../modules/flashSale/flashSale.route");
 const review_route_1 = require("../modules/review/review.route");
 const recentProduct_route_1 = require("../modules/recentProduct/recentProduct.route");
 const coupon_route_1 = require("../modules/coupon/coupon.route");
 const category_routes_1 = require("../modules/category/category.routes");
 const upload_route_1 = require("../modules/upload/upload.route");
+const follower_route_1 = require("../modules/follower/follower.route");
+const order_route_1 = require("../modules/order/order.route");
 const router = express_1.default.Router();
 const routes = [
     {
@@ -61,6 +62,10 @@ const routes = [
     {
         path: "/uploads",
         routes: upload_route_1.uploadRoutes,
+    },
+    {
+        path: "/orders",
+        routes: order_route_1.orderRoutes,
     },
 ];
 routes.forEach((route) => router.use(route.path, route.routes));

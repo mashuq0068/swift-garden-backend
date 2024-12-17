@@ -25,6 +25,15 @@ const createCategoryIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(v
         data: result,
     });
 }));
+const createManyCategoryIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield category_service_1.categoryServices.createManyCategories(req.body);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        status: 200,
+        message: "Categories created successfully",
+        data: result,
+    });
+}));
 const getAllCategoriesFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield category_service_1.categoryServices.getCategories();
     (0, sendResponse_1.default)(res, {
@@ -69,4 +78,5 @@ exports.categoryControllers = {
     getSingleCategoryFromDB,
     updateCategoryIntoDB,
     deleteCategoryFromDB,
+    createManyCategoryIntoDB
 };

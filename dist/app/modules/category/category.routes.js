@@ -5,6 +5,7 @@ const express_1 = require("express");
 const category_controller_1 = require("./category.controller");
 const router = (0, express_1.Router)();
 router.post("/", category_controller_1.categoryControllers.createCategoryIntoDB);
+router.post("/many", category_controller_1.categoryControllers.createManyCategoryIntoDB);
 router.get("/", category_controller_1.categoryControllers.getAllCategoriesFromDB);
 router.get("/:id", category_controller_1.categoryControllers.getSingleCategoryFromDB);
 router.put("/:id", category_controller_1.categoryControllers.updateCategoryIntoDB);

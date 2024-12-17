@@ -27,8 +27,8 @@ const getRecentProducts = () => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const getSingleRecentProduct = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield config_1.prisma.recentProduct.findUniqueOrThrow({
-        where: { id },
+    const result = yield config_1.prisma.recentProduct.findMany({
+        where: { userId: id },
         include: {
             product: true,
             user: true,

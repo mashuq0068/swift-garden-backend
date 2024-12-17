@@ -24,18 +24,24 @@ class QueryBuilder {
         const { search } = this.queryParams;
         if (search && fields.length > 0) {
             this.query.where.OR = fields.map((field) => ({
-                [field]: { contains: search, mode: 'insensitive' },
+                [field]: { contains: search, mode: "insensitive" },
             }));
         }
         return this;
     }
-    // Updated method to add filters to the query
     addFilters() {
-        const excludeFields = ['search', 'sort', 'limit', 'page'];
-        for (const [key, value] of Object.entries(this.queryParams)) {
-            if (!excludeFields.includes(key)) {
-                this.query.where[key] = value;
-            }
+        const filters = this.queryParams.filters || {};
+        if (filters.categories && filters.categories.length > 0) {
+            this.query.where.categoryId = { in: filters.categories };
+        }
+        if (filters.minPrice) {
+            this.query.where.price = Object.assign(Object.assign({}, this.query.where.price), { gte: parseFloat(filters.minPrice) });
+        }
+        if (filters.maxPrice) {
+            this.query.where.price = Object.assign(Object.assign({}, this.query.where.price), { lte: parseFloat(filters.maxPrice) });
+        }
+        if (filters.shopId) {
+            this.query.where.shopId = filters.shopId;
         }
         return this;
     }
@@ -43,9 +49,9 @@ class QueryBuilder {
     addSort() {
         const { sort } = this.queryParams;
         if (sort) {
-            const [field, direction] = sort.split(':'); // e.g., "createdAt:desc"
+            const [field, direction] = sort.split(":"); // e.g., "createdAt:desc"
             this.query.orderBy = {
-                [field]: direction || 'asc',
+                [field]: direction || "asc",
             };
         }
         return this;
@@ -70,8 +76,8 @@ class QueryBuilder {
         return __awaiter(this, void 0, void 0, function* () {
             const total = yield prismaModel.count({ where: this.query.where });
             const { page, limit: pageSize } = this.queryParams;
-            const currentPage = parseInt(page || '0', 10);
-            const limit = parseInt(pageSize || '10', 10);
+            const currentPage = parseInt(page || "0", 10);
+            const limit = parseInt(pageSize || "10", 10);
             const totalPages = Math.ceil(total / limit);
             return {
                 total,

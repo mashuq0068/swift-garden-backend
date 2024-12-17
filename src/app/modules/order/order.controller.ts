@@ -20,8 +20,8 @@ const createOrderWithPaymentLink = catchAsync(async (req, res) => {
   });
 });
 const getAllOrders = catchAsync(async (req, res) => {
-  console.log(req.params.id);
-  const result = await orderServices.getAllOrdersFromDB(req.params.id);
+
+  const result = await orderServices.getAllOrdersFromDB(req.query);
   sendResponse(res, {
     success: true,
     status: 200,

@@ -17,6 +17,19 @@ const createCategory = (payload) => __awaiter(void 0, void 0, void 0, function* 
     });
     return result;
 });
+const createManyCategories = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield config_1.prisma.category.createMany({
+            data: payload,
+            skipDuplicates: true,
+        });
+        return result;
+    }
+    catch (error) {
+        console.error('Error creating categories:', error);
+        throw new Error('Failed to create categories');
+    }
+});
 const getCategories = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield config_1.prisma.category.findMany({
         include: {
@@ -29,7 +42,11 @@ const getSingleCategory = (id) => __awaiter(void 0, void 0, void 0, function* ()
     const result = yield config_1.prisma.category.findUniqueOrThrow({
         where: { id },
         include: {
-            products: true,
+            products: {
+                include: {
+                    shop: true
+                }
+            }
         },
     });
     return result;
@@ -56,6 +73,7 @@ exports.categoryServices = {
     createCategory,
     getCategories,
     getSingleCategory,
+    createManyCategories,
     updateCategory,
     deleteCategory,
 };

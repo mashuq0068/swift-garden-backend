@@ -11,13 +11,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userServices = void 0;
 const config_1 = require("../../config");
-const getUsers = () => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield config_1.prisma.user.findMany();
+const getUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const { role } = query;
+    const users = yield config_1.prisma.user.findMany({
+        where: role ? { role } : {},
+        include: {
+            Shop: true,
+        },
+    });
     return users;
 });
 const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield config_1.prisma.user.findUniqueOrThrow({
         where: { id },
+        include: {
+            Follower: true,
+            Review: true,
+            Order: true,
+        },
     });
     return user;
 });

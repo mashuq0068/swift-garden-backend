@@ -18,11 +18,22 @@ const createShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
         const uploadToCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(logo);
         req.body.logo = uploadToCloudinary === null || uploadToCloudinary === void 0 ? void 0 : uploadToCloudinary.secure_url;
     }
-    console.log("req => ", req.body);
     const result = yield config_1.prisma.shop.create({
         data: Object.assign({}, req.body),
     });
     return result;
+});
+const createManyShops = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield config_1.prisma.shop.createMany({
+            data: payload,
+        });
+        return result;
+    }
+    catch (error) {
+        console.error('Error creating shops:', error);
+        throw new Error('Failed to create shops');
+    }
 });
 const getShops = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield config_1.prisma.shop.findMany({
@@ -51,12 +62,10 @@ const updateShop = (id, payload) => __awaiter(void 0, void 0, void 0, function* 
     const res = yield config_1.prisma.shop.findUniqueOrThrow({
         where: { id },
     });
-   
     const result = yield config_1.prisma.shop.update({
         where: { id },
         data: payload,
     });
-
     return result;
 });
 const deleteShop = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -72,5 +81,6 @@ exports.shopServices = {
     getShops,
     getSingleShop,
     updateShop,
+    createManyShops,
     deleteShop,
 };
