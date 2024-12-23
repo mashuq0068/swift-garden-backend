@@ -55,13 +55,13 @@ const getProducts = (queryParams) => __awaiter(void 0, void 0, void 0, function*
         .addSearch(["name"])
         .addFilters()
         .addSort()
-        .addPagination()
+        // .addPagination()
         .build();
     const result = yield config_1.prisma.product.findMany({
         where: prismaQuery.where,
-        orderBy: prismaQuery.orderBy,
-        skip: prismaQuery.skip,
-        take: prismaQuery.take,
+        // orderBy: prismaQuery.orderBy,
+        // skip: prismaQuery.skip,
+        // take: prismaQuery.take,
         include: {
             category: true,
             shop: true,

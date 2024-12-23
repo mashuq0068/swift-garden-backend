@@ -14,41 +14,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fileUploader = void 0;
 const multer_1 = __importDefault(require("multer"));
-const path_1 = __importDefault(require("path"));
 const cloudinary_1 = require("cloudinary");
 const AppError_1 = require("../errors/AppError");
-// Configuration of cloudinary
+// Configure Cloudinary
 cloudinary_1.v2.config({
     cloud_name: "dhe24bfs8",
     api_key: "428397182746349",
     api_secret: "Ggy6Lq6Mu6V-TndITIjhqogCsp4",
 });
-// multer setup
-const storage = multer_1.default.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path_1.default.join(process.cwd(), "uploads"));
-    },
-    filename: function (req, file, cb) {
-        //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        //   cb(null, file.fieldname + '-' + uniqueSuffix)
-        cb(null, file.originalname);
-    },
-});
-//   multer uploader
-const upload = (0, multer_1.default)({ storage: storage });
+// Multer memory storage
+const storage = multer_1.default.memoryStorage();
+// Multer uploader
+const upload = (0, multer_1.default)({ storage });
+// Upload file directly to Cloudinary
 const uploadToCloudinary = (file) => __awaiter(void 0, void 0, void 0, function* () {
-    // Upload an image
-    try {
-        const uploadResult = yield cloudinary_1.v2.uploader.upload(file.path, {
-            public_id: file.originalname,
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary_1.v2.uploader.upload_stream({ public_id: file.originalname }, (error, result) => {
+            if (error) {
+                reject(new AppError_1.AppError(500, "File upload to Cloudinary failed"));
+            }
+            else {
+                resolve(result); // Resolve with the upload result
+            }
         });
-        return uploadResult;
-    }
-    catch (err) {
-        throw new AppError_1.AppError(500, "File not uploaded");
-    }
+        stream.end(file.buffer); // Send the file buffer to the Cloudinary upload stream
+    });
 });
 exports.fileUploader = {
     upload,
-    uploadToCloudinary
+    uploadToCloudinary,
 };

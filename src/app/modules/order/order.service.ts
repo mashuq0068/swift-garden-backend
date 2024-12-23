@@ -46,7 +46,7 @@ const createOrderAndPaymentLink = async ({
   console.log("order", order);
 
   // Ensure CLIENT_URL is properly defined, use localhost as fallback if not defined
-  const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
+  const clientUrl = process.env.CLIENT_URL || "https://swift-garden-frontned.vercel.app/";
 
   const line_items = items.map((item) => ({
     price_data: {
@@ -63,8 +63,8 @@ const createOrderAndPaymentLink = async ({
     payment_method_types: ["card"],
     line_items,
     mode: "payment",
-    success_url: "http://localhost:3000/success",
-    cancel_url: "http://localhost:3000/cancel",
+    success_url: "https://swift-garden-frontned.vercel.app/success",
+    cancel_url: "https://swift-garden-frontned.vercel.app/cancel",
   });
 
   // Save Transaction

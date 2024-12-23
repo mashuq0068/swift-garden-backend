@@ -14,7 +14,7 @@ const fileUploader_1 = require("../../utils/fileUploader");
 const uploadFileIntoCloudinary = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const uploadToCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(req.file);
     return {
-        photo: uploadToCloudinary === null || uploadToCloudinary === void 0 ? void 0 : uploadToCloudinary.secure_url,
+        photo: uploadToCloudinary === null || uploadToCloudinary === void 0 ? void 0 : uploadToCloudinary.secure_url, // Access `secure_url` from the result object
     };
 });
 exports.uploadServices = {
