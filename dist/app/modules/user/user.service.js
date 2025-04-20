@@ -28,6 +28,7 @@ const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
             Follower: true,
             Review: true,
             Order: true,
+            Shop: true,
         },
     });
     return user;

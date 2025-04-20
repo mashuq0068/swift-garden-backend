@@ -24,6 +24,7 @@ const getUserById = async (id: string) => {
       Follower: true,
       Review: true,
       Order: true,
+      Shop: true, 
     },
   });
   return user;
